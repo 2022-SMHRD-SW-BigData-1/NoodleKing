@@ -6,6 +6,8 @@ public class ex01 {
 		System.out.println("팀 첫번째 커밋!");
 		System.out.println("첫번째 커밋입니다.");
 		System.out.println("Noodle King");
+		System.out.println("세 번째 커밋입니다.");
+		
 	}
 
 }
