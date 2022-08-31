@@ -6,7 +6,7 @@ public class ex04 {
 		System.out.println("유린기");
 		System.out.println("깐풍기");
 		System.out.println("카라아게");
-
+		
 	}
 
 }
