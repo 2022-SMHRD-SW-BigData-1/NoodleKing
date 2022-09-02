@@ -185,7 +185,7 @@ public class ControllerTotal {
 		}
 	}
 
-	public void stats(int select) {
+	public void statsup(int select) {
 		if (select == 1) {
 			lvTotal.setStr(+1);
 		} else if (select == 2) {
@@ -198,15 +198,26 @@ public class ControllerTotal {
 	}
 
 	public void fight(int choice) {
-		System.out.println("[1]평타치기(" + (lvTotal.getStr() * 5) + "%");
-		System.out.println("[2]스킬쓰기(" + (lvTotal.getIq() * 5) + "%");
-		System.out.println("[3]도망가기(" + (lvTotal.getDex() * 5) + "%");
-		System.out.println("[4]협상하기(" + (lvTotal.getLuk() * 5) + "%");
-		fightChoice(choice);
+		connect();
+		try {
+			String sql = "select * from monster where m_lv = ?";
+			psmt.setInt(1, lvTotal.getLv());
+			String m_name = rs.getString("m_name");
+			int m_lv = rs.getInt("m_lv");
+			int m_exp = rs.getInt("m_exp");
+			System.out.println("몬스터 이름 : " + m_name + " Lv : " + m_lv + "몬스터_exp : " + m_exp);
+			System.out.println("[1]평타치기(" + (lvTotal.getStr() * 5) + "%");
+			System.out.println("[2]스킬쓰기(" + (lvTotal.getIq() * 5) + "%");
+			System.out.println("[3]도망가기(" + (lvTotal.getDex() * 5) + "%");
+			System.out.println("[4]협상하기(" + (lvTotal.getLuk() * 5) + "%");
+			fightResult(choice, m_exp);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
-	private void fightChoice(int choice) {
+	private void fightResult(int choice, int m_exp) {
 		int length = 0;
 		int succ = 1;
 		int fail = 0;
@@ -220,6 +231,7 @@ public class ControllerTotal {
 			int luck = rd.nextInt(length - 1);
 			if (luck == arr[0]) {
 				System.out.println("전투에서 승리하였습니다.");
+				lvTotal.setExp(+m_exp); // 경험치 추가
 			} else {
 				lvTotal.setHp(-1);
 				System.out.println("전투에서 패배하셨습니다.");
@@ -234,6 +246,7 @@ public class ControllerTotal {
 			int luck = rd.nextInt(length - 1);
 			if (luck == arr[0]) {
 				System.out.println("전투에서 승리하였습니다.");
+				lvTotal.setExp(+m_exp); // 경험치 추가
 			} else {
 				lvTotal.setHp(-1);
 				System.out.println("전투에서 패배하셨습니다.");
@@ -248,6 +261,7 @@ public class ControllerTotal {
 			int luck = rd.nextInt(length - 1);
 			if (luck == arr[0]) {
 				System.out.println("전투에서 승리하였습니다.");
+				lvTotal.setExp(+m_exp); // 경험치 추가
 			} else {
 				lvTotal.setHp(-1);
 				System.out.println("전투에서 패배하셨습니다.");
@@ -262,10 +276,12 @@ public class ControllerTotal {
 			int luck = rd.nextInt(length - 1);
 			if (luck == arr[0]) {
 				System.out.println("전투에서 승리하였습니다.");
+				lvTotal.setExp(+m_exp); // 경험치 추가
 			} else {
 				lvTotal.setHp(-1);
 				System.out.println("전투에서 패배하셨습니다.");
 			}
+
 		}
 	}
 
