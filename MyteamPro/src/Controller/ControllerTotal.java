@@ -90,6 +90,59 @@ public class ControllerTotal {
 		}
 	}
 
+	public void forLogin(String id, String pw, String name, String nick, String donate) {
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			String url = "jdbc:oracle:thin:@Project-db-stu.ddns.net:1524:xe";
+			String db_id = "campus_h_0830_5";
+			String db_pw = "smhrd5";
+
+			conn = DriverManager.getConnection(url, db_id, db_pw);
+
+			String sql = "insert into user_info values(?,?,?,?,?)";
+			psmt = conn.prepareStatement(sql);
+
+			psmt.setString(1, id);
+			psmt.setString(2, pw);
+			psmt.setString(3, name);
+			psmt.setString(4, nick);
+			psmt.setString(5, donate);
+
+			int rows = psmt.executeUpdate();
+			if (rows > 0) {
+				System.out.println("로그인 성공");
+			} else {
+				System.out.println("로그인 실패");
+			}
+
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			System.out.println("접속오류");
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("드라이버접속오류");
+		}
+
+		finally {
+
+			try {
+				if (psmt != null) {
+					psmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+				if (rs != null) {
+					rs.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				System.out.println("닫기실패");
+			}
+		}
+
+	}
+
 	public void connect() {
 
 		try {
