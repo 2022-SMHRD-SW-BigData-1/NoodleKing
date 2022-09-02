@@ -8,6 +8,8 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
 
+import Model.NoodleModel;
+
 public class Userinfo {
 
 	Connection conn = null;
@@ -15,6 +17,7 @@ public class Userinfo {
 	ResultSet rs = null;
 	Random rd = new Random();
 	Scanner sc = new Scanner(System.in);
+	NoodleModel noo;
 	
 	public void getCon() {
 		try {
@@ -25,6 +28,8 @@ public class Userinfo {
 			String db_pw = "smhrd5";
 			
 			conn = DriverManager.getConnection(url, db_id, db_pw);
+			if(conn!=null)
+				System.out.println("접속완료");
 			
 		} catch(ClassNotFoundException e) {
 			e.printStackTrace();
@@ -66,6 +71,10 @@ public class Userinfo {
 			psmt.setString(4, nick);
 
 			row = psmt.executeUpdate();
+			
+			if(row>0) {
+				noo = new NoodleModel(id, pw, name, nick, "N");
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -110,7 +119,7 @@ public class Userinfo {
 					break;
 			}
 						
-			String sql = "insert into character values(?, ?, ?, ?, ?, ?, ?, 1, 5, 5, 0)";
+			String sql = "insert into character values(?, ?, ?, ?, ?, ?, ?, 1, 5, 5, 0, 0)";
 
 			psmt = conn.prepareStatement(sql);
 
@@ -123,7 +132,7 @@ public class Userinfo {
 			psmt.setString(7, nick);
 			
 			row = psmt.executeUpdate();
-
+			
 		} catch(SQLException e) {
 			e.printStackTrace();
 			System.out.println("스탯 데이터베이스 오류!");
@@ -145,7 +154,7 @@ public class Userinfo {
 		rs = psmt.executeQuery();
 		
 		if(rs.next()) {
-			if(rs.getString(1).contentEquals(pw)) {
+			if(rs.getString(1).contentEquals(pw)) {		
 				return 1; // 로그인 성공
 			} else {
 			return 0; // 비밀번호 실패
@@ -160,4 +169,18 @@ public class Userinfo {
 		}
 		return -2;
 	}
+	
+	
 }
+
+
+
+//sql = "select * from character where id = ?";
+//psmt = conn.prepareStatement(sql);
+//psmt.setString(1, id);
+//rs = psmt.executeQuery();
+//if(rs.next()) {
+//	noo = new NoodleModel(rs.getInt("str"), rs.getInt("dex"), rs.getInt("int"), rs.getInt("luk"), rs.getString("id"),
+//			rs.getString("pw"), rs.getString("nick"), rs.getInt("lv"), rs.getInt("hp"), rs.getInt("mp"),
+//			rs.getInt("exp"));
+//}

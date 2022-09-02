@@ -5,16 +5,24 @@ import java.util.Scanner;
 import Controller.Battle;
 import Controller.Donate;
 import Controller.Level;
+import Controller.Ranking;
 import Controller.Userinfo;
+import Controller.diceDAO;
+import Controller.lspDAO;
 import Model.NoodleModel;
 
 public class NoodleKing {
+	static int count = 1;
+	
 	public static void main(String[] args) {
-
 		Battle bat = new Battle();
 		Level lv = new Level();
 		Userinfo user = new Userinfo();
-		Donate donate = new Donate();
+		Donate don = new Donate();
+		lspDAO lsp = new lspDAO();
+		diceDAO dice = new diceDAO();
+		Ranking rank = new Ranking();
+		Level lev = new Level();
 
 		Scanner sc = new Scanner(System.in);
 
@@ -24,14 +32,16 @@ public class NoodleKing {
 		String nick = "";
 		String name = "";
 		NoodleModel noo = new NoodleModel();
+		
+				
 
 		while (true) {
 			
 			System.out.println("========================");
 			System.out.println("      누 들 킹 RPG");
 			System.out.println();
-			System.out.print("[1]로그인 [2]회원가입 [3]종료");
-			System.out.println("\n========================");
+			System.out.println("[1]로그인 [2]회원가입 [3]종료");
+			System.out.println("========================");
 			menu = sc.nextInt();
 
 			if (menu == 1) {
@@ -47,12 +57,42 @@ public class NoodleKing {
 					
 					//로그인 후 화면
 					while(true) {
-						System.out.println("========================");
+						System.out.println("===========================================================");
 						System.out.println("      누 들 킹 RPG");
 						System.out.println();
-						System.out.print("[1]사냥하기 [2]회원가입 [3]종료");
-						System.out.println("\n========================");
+						System.out.println("[1]사냥하기 [2]미니게임 [3] 랭킹 [4]후원하기 [5]캐릭상태보기 [6]로그아웃");
+						System.out.println("===========================================================");
 						menu = sc.nextInt();
+						
+						if(menu==1) {
+							//몬스터정보랑 선택지
+							bat.monster(id);
+							menu = sc.nextInt();
+							bat.fight(id, menu);
+							lev.lvUp(id);
+														
+						} else if(menu==2) {
+							// 미니게임
+							System.out.println("플레이할 미니게임을 고르세요");
+							System.out.print("[1]가위바위보 [2]홀짝");
+							menu = sc.nextInt();
+							if(menu == 1) {
+								lsp.playGame(id);
+							} else if(menu == 2) {
+								dice.playGame(id);
+							}
+							
+							
+						} else if(menu==3) {
+							rank.rank(id);;
+							
+						} else if(menu==4) {
+							
+						} else if(menu==5) {
+							
+						} else if(menu==6) {
+							break;
+						}
 					}
 					
 					
@@ -97,5 +137,5 @@ public class NoodleKing {
 			}
 		}
 	}
-
+	
 }
