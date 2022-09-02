@@ -19,6 +19,9 @@ public class m {
 	private String m_name;
 	private int m_lv;
 	private int m_exp;
+	public m() {
+		
+	}
 
 	public m(int str, int dex, int iq, int luk, int hp, int mp, int exp, int lv, String nick, String id, String pw,
 			String name, String donate, String m_name, int m_lv, int m_exp) {
