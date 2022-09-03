@@ -9,6 +9,7 @@ import Controller.Ranking;
 import Controller.Userinfo;
 import Controller.diceDAO;
 import Controller.lspDAO;
+import Controller.statusDAO;
 import Model.NoodleModel;
 
 public class NoodleKing {
@@ -23,6 +24,7 @@ public class NoodleKing {
 		diceDAO dice = new diceDAO();
 		Ranking rank = new Ranking();
 		Level lev = new Level();
+		statusDAO stat = new statusDAO();
 
 		Scanner sc = new Scanner(System.in);
 
@@ -69,6 +71,7 @@ public class NoodleKing {
 							bat.monster(id);
 							menu = sc.nextInt();
 							bat.fight(id, menu);
+							bat.exp(id);
 							lev.lvUp(id);
 														
 						} else if(menu==2) {
@@ -81,22 +84,16 @@ public class NoodleKing {
 							} else if(menu == 2) {
 								dice.playGame(id);
 							}
-							
-							
 						} else if(menu==3) {
 							rank.rank(id);;
-							
 						} else if(menu==4) {
-							
+							don.donate();
 						} else if(menu==5) {
-							
+							stat.status(id);
 						} else if(menu==6) {
 							break;
 						}
 					}
-					
-					
-					
 					
 					
 					
