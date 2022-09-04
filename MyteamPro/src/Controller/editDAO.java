@@ -103,15 +103,15 @@ public class editDAO {
 		try {
 			getCon();
 			
-			String sql = "update character set lv = ? where id = ?";
+			String sql = "update character set hp = ? where id = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, HP);
 			psmt.setString(2, id);
 			int cnt = psmt.executeUpdate();
 			if(cnt>0) {
-				System.out.println("레벨이 변경되었습니다!");
+				System.out.println("라이프가 변경되었습니다!");
 			} else {
-				System.out.println("레벨 변경이 실패하였습니다!");
+				System.out.println("라이프 변경이 실패하였습니다!");
 			}
 
 		} catch(SQLException e) {
