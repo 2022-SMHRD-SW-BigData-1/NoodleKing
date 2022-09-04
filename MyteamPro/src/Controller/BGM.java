@@ -11,12 +11,12 @@ public class BGM { // Controller
 	int currentIndex = 0;
 	
 	public BGM() {
-		musicList.add(new BGMModel("MainBGM.mp3"));
-		musicList.add(new BGMModel("브금3.mp3"));
-		musicList.add(new BGMModel("minigame.mp3"));
-		musicList.add(new BGMModel("Rain - 깡.mp3"));
-		musicList.add(new BGMModel("sueBGM.mp3"));
-		musicList.add(new BGMModel("rank.mp3"));		
+		musicList.add(new BGMModel("bgm//MainBGM.mp3"));
+		musicList.add(new BGMModel("bgm//브금3.mp3"));
+		musicList.add(new BGMModel("bgm//minigame.mp3"));
+		musicList.add(new BGMModel("bgm//Rain - 깡.mp3"));
+		musicList.add(new BGMModel("bgm//sueBGM.mp3"));
+		musicList.add(new BGMModel("bgm//rank.mp3"));		
 	}
 	
 	public BGMModel play(int num) {

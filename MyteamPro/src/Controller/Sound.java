@@ -11,11 +11,11 @@ public class Sound { // Controller
 	int currentIndex = 0;
 	
 	public Sound() {
-		musicList.add(new BGMModel("attack.mp3"));
-		musicList.add(new BGMModel("skill.mp3"));
-		musicList.add(new BGMModel("run.mp3"));
-		musicList.add(new BGMModel("4달라.mp3"));
-		musicList.add(new BGMModel("lvup.mp3"));		
+		musicList.add(new BGMModel("sound//attack.mp3"));
+		musicList.add(new BGMModel("sound//skill.mp3"));
+		musicList.add(new BGMModel("sound//run.mp3"));
+		musicList.add(new BGMModel("sound//4달라.mp3"));
+		musicList.add(new BGMModel("sound//lvup.mp3"));		
 	}
 	
 	public BGMModel play(int num) {
