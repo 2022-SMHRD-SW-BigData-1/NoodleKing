@@ -77,7 +77,7 @@ public class NoodleKing {
 							bat.chaInfo(id);
 							bat.monInfo(id);
 							menu = sc.nextInt();
-							bat.fight(id, menu);
+							bat.fight(menu);
 							bat.exp(id);
 							lev.lvUp(id);
 							bat.chaInfo(id);

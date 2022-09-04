@@ -192,7 +192,7 @@ public class Battle {
 
 	}
 
-	public void fight(String id, int choice) {
+	public void fight(int choice) {
 		
 		int ran = rd.nextInt(100);
 		if (choice == 1) {
