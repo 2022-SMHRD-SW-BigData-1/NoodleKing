@@ -58,7 +58,7 @@ public class Userinfo {
 	}
 	
 	public int createUser(String id, String pw, String name, String nick) {
-		int row = 0;
+		
 		try {			
 			getCon();
 			
@@ -66,8 +66,8 @@ public class Userinfo {
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1,id);
 			psmt.setString(2,nick);
-			row = psmt.executeUpdate();
-			if(row > 0) {
+			
+			rs = psmt.executeQuery();
 			
 			
 			sql = "insert into user_info values(?,?,?,?,'N')";
