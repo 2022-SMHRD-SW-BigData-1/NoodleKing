@@ -28,8 +28,6 @@ public class Userinfo {
 			String db_pw = "smhrd5";
 			
 			conn = DriverManager.getConnection(url, db_id, db_pw);
-			if(conn!=null)
-				System.out.println("접속완료");
 			
 		} catch(ClassNotFoundException e) {
 			e.printStackTrace();
@@ -57,20 +55,53 @@ public class Userinfo {
 		}	
 	}
 	
-	public int createUser(String id, String pw, String name, String nick) {
-		
-		try {			
+	public int createOverlapID(String id) {
+		try {
 			getCon();
 			
-			String sql = "select count(*) from user_info where id = ? and nick = ?";
+			String sql = "select * from user_info where id = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1,id);
-			psmt.setString(2,nick);
 			
 			rs = psmt.executeQuery();
 			
+			if(rs.next()) {
+				return 1;
+			}
 			
-			sql = "insert into user_info values(?,?,?,?,'N')";
+		} catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("중복 오류");
+		} return 0;
+	}
+	
+	public int createOverlapNick(String nick) {
+		try {
+			getCon();
+			
+			String sql = "select * from user_info where nick = ?";
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1,nick);
+			
+			rs = psmt.executeQuery();
+			
+			if(rs.next()) {
+				return 1;
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("중복 오류");
+		} return 0;
+	}
+	
+	public int createUser(String id, String pw, String name, String nick) {
+		int row = 0;
+		
+		try {			
+			getCon();
+				
+			String sql = "insert into user_info values(?,?,?,?,'N')";
 			psmt = conn.prepareStatement(sql);
 
 			psmt.setString(1, id);
@@ -79,7 +110,7 @@ public class Userinfo {
 			psmt.setString(4, nick);
 
 			row = psmt.executeUpdate();
-			}
+			
 			
 			if(row>0) {
 				noo = new NoodleModel(id, pw, name, nick, "N");
