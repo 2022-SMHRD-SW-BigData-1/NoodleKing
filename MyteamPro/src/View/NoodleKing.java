@@ -29,19 +29,15 @@ public class NoodleKing {
 		Level lev = new Level();
 		statusDAO stat = new statusDAO();
 		editDAO ed = new editDAO();
+		
 		Scanner sc = new Scanner(System.in);
 		BGM bgm = new BGM();
-		
-		
 		
 		int menu = 0;
 		String id = "";
 		String pw = "";
 		String nick = "";
 		String name = "";			
-		
-		
-		
 		
 		while (true) {
 			bgm.play(1);
@@ -160,10 +156,6 @@ public class NoodleKing {
 							break;
 						}
 					}
-					
-					
-					
-					
 				} else if(log == 0) {
 					System.out.println("비밀번호 오류!");
 				} else if(log == -1) {
@@ -179,19 +171,32 @@ public class NoodleKing {
 				name = sc.next();
 				System.out.print("닉네임 입력 : ");
 				nick = sc.next();
-
-				int us = user.createUser(id, pw, name, nick);
-				if (us > 0) {
-					System.out.println("계정 생성 성공!");
+				
+				if(user.createOverlapID(id)==1) {
+					
+					System.out.println("아이디가 중복입니다.");
+					System.out.println("다른 아이디를 적어주세요");
+					
+				} else if(user.createOverlapNick(nick)==1) {
+					
+					System.out.println("닉네임이 중복입니다.");
+					System.out.println("다른 닉네임을 적어주세요");
+					
 				} else {
-					System.out.println("계정 생성 실패!");
-				}
+					
+					int us = user.createUser(id, pw, name, nick);
+					if (us > 0) {
+						System.out.println("계정 생성 성공!");
+					} else {
+						System.out.println("계정 생성 실패!");
+					}
 
-				int ch = user.createCha(id, pw, nick);
-				if (ch > 0) {
-					System.out.println("캐릭터 생성 성공!");
-				} else {
-					System.out.println("캐릭터 생성 실패!");
+					int ch = user.createCha(id, pw, nick);
+					if (ch > 0) {
+						System.out.println("캐릭터 생성 성공!");
+					} else {
+						System.out.println("캐릭터 생성 실패!");
+					}
 				}
 
 			} else if (menu == 3) {
