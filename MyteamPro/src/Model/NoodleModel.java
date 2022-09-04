@@ -20,8 +20,17 @@ public class NoodleModel {
 	private String m_name;
 	private int m_lv;
 	private int m_exp;
-	private int m_score;	
+	private int m_score;
+	private String m_pic;
 	
+	
+	
+	public NoodleModel(String m_name, String m_pic) {
+		super();
+		this.m_name = m_name;
+		this.m_pic = m_pic;
+	}
+
 	public NoodleModel(String m_name, int m_lv, int m_exp, int m_score) {
 		super();
 		this.m_name = m_name;

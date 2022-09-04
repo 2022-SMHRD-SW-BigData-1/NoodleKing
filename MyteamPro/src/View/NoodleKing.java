@@ -2,18 +2,17 @@ package View;
 
 import java.util.Scanner;
 
+import Controller.BGM;
 import Controller.Battle;
 import Controller.Donate;
 import Controller.Level;
-import Controller.BGM;
 import Controller.Ranking;
 import Controller.Userinfo;
 import Controller.diceDAO;
 import Controller.editDAO;
 import Controller.lspDAO;
 import Controller.statusDAO;
-import Model.BGMModel;
-import Model.NoodleModel;
+import Model.Monster;
 
 public class NoodleKing {
 	static int count = 1;
@@ -29,6 +28,7 @@ public class NoodleKing {
 		Level lev = new Level();
 		statusDAO stat = new statusDAO();
 		editDAO ed = new editDAO();
+		Monster mon = new Monster();
 		
 		Scanner sc = new Scanner(System.in);
 		BGM bgm = new BGM();
@@ -38,7 +38,6 @@ public class NoodleKing {
 		String pw = "";
 		String nick = "";
 		String name = "";			
-		
 		while (true) {
 			bgm.play(1);
 			System.out.println("========================");
@@ -71,6 +70,7 @@ public class NoodleKing {
 						if(menu==1) {
 							bgm.play(2);
 							//몬스터정보랑 선택지
+							//몬스터그림
 							bat.chaInfo(id);
 							bat.monInfo(id);
 							menu = sc.nextInt();

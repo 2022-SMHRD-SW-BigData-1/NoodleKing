@@ -5,8 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Random;
 
+import Model.Monster;
 import Model.NoodleModel;
 
 public class Battle {
@@ -14,16 +16,19 @@ public class Battle {
 	Random rd = new Random();
 	Userinfo user = new Userinfo();
 	Sound sou = new Sound();
+	Monster mon = new Monster();
 	
 	Connection conn = null;
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
 	String m_name;
 	String nick;
+	int index;
 	int exp, score, hp, mp, lv, str, iq, dex, luk;
 	int m_exp, m_score, m_lv;
 	int match;
 	int ran = rd.nextInt(100);
+	ArrayList<String> mon2;
 	
 	int menu;
 	int length = 0;
@@ -103,11 +108,11 @@ public class Battle {
 		}	
 	}
 
-	public void insertMonModel(String id) {
+	public void insertMonModel(String id) { 
 		try {
 			getCon();
 			// 몬스터 정보
-			String sql = "select * from monster where m_lv = ?";
+			String sql = "select * from (select * from monster order by DBMS_RANDOM.RANDOM) where rownum = 1 and m_lv = ?";
 			// db에서 랜덤뽑기
 			// 자바에서 뽑기
 
@@ -115,12 +120,18 @@ public class Battle {
 			psmt.setInt(1, lv);
 			rs = psmt.executeQuery();
 
-			if (rs.next()) {
+			if(rs.next()) {
 				m_name = rs.getString("m_name");
 				m_lv = rs.getInt("m_lv");
 				m_exp = rs.getInt("m_exp");
 				m_score = rs.getInt("m_score");
 			}
+			int index = getMon(m_name);
+			mon2 = mon.getMon();
+			
+			System.out.println(mon2.get(index));
+			
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -129,9 +140,26 @@ public class Battle {
 		}
 	}
 	
+	public int getMon(String m_name) {
+		String[] mon = {"속찬라면", "콩국수", "봉골라면", "메밀소바", "스파게티", "라면볶이", "쌀라면", "독도와함께라면", "목이라면", "손큰라면", 
+					"간짬뽕", "국민라면", "남자라면", "사리면", "속풀라면", "우리밀라면", "짜짜로니", "카레라면", "컵누들", "황태라면",
+					"나가사끼짬뽕", "새우탕", "손칼국수", "쇠고기면", "수타면", "열라면", "진짬뽕", "참깨라면", "튀김우동", "파워라면", 
+					"꼬꼬면", "너구리", "무파마", "비빔면", "삼양라면", "스낵면", "안성탕면", "오모리김치찌개", "오징어짬뽕", "틈새라면",
+					"감자면", "공화춘", "마왕라면", "부대찌개라면", "불닭볶음면", "사리곰탕", "순후추라면", "육개장", "진라면", "짜파게티"};
+		
+		while(true) {
+			if(m_name.equals(mon[index]) || index>49) {
+				break;
+			} else {
+				index++;
+			}
+		}
+		return index;
+	}
+	
 	public void chaInfo(String id) {
 		insertModel(id);
-			
+		System.out.println("==============================캐릭터정보==============================");
 		System.out.println("닉네임\t : " + nick);
 		System.out.print("HP\t : " + hp + "\t");
 		System.out.println("MP\t : " + mp + "\t");
@@ -142,25 +170,29 @@ public class Battle {
 		System.out.print("힘\t : " + str + "\t");
 		System.out.print("지능\t : " + iq + "\t");
 		System.out.print("민첩\t : " + dex + "\t");
-		System.out.print("운\t : " + luk + "\t");
+		System.out.println("운\t : " + luk + "\t");
+		System.out.println("===================================================================");
 		System.out.println();
 	}
 	
 	public void monInfo(String id) {
 		insertMonModel(id);
-		
 		System.out.println();
+		System.out.println("==============================몬스터정보==============================");
 		System.out.println("몬스터 이름\t: " + m_name);
 		System.out.print("레벨\t: " + m_lv);
 		System.out.print("\t몬스터 처치 시 경험치\t: " + m_exp);
-		System.out.print("\t몬스터 처치 시 점수\t: " + m_score);
-		System.out.println();
-				
+		System.out.println("\t몬스터 처치 시 점수\t: " + m_score);
+		System.out.println("===================================================================");
+		System.out.println();	
+		chaInfo(id);
 			// 선택지
-				System.out.println("[1]평타치기(" + str * 10 + "% 승리)");
-				System.out.println("[2]스킬쓰기(" + iq * 10 + "% 승리)");
-				System.out.println("[3]도망가기(" + dex * 10 + "% 승리)");
-				System.out.println("[4]협상하기(" + luk * 10 + "% 승리)");
+		System.out.println("====================전투옵션====================");
+		System.out.println("[1]평타치기(" + str * 10 + "% 승리)");
+		System.out.println("[2]스킬쓰기(" + iq * 10 + "% 승리)");
+		System.out.println("[3]도망가기(" + dex * 10 + "% 승리)");
+		System.out.println("[4]협상하기(" + luk * 10 + "% 승리)");
+		System.out.println("==============================================");
 
 	}
 

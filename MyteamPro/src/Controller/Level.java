@@ -187,9 +187,11 @@ public class Level {
 		insertModel(id);
 		bat.chaInfo(id);
 		sou.play(5);
+		System.out.println("====================스텟====================");
 		System.out.println("레벨업!!");
 		System.out.println("증가할 스탯을 고르세요");
 		System.out.print("[1]STR [2]INT [3]DEX [4]LUK");
+		System.out.println("===========================================");
 		int select = sc.nextInt();
 
 		if (select == 1) {
