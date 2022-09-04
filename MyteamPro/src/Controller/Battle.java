@@ -10,27 +10,22 @@ import java.util.Random;
 import Model.NoodleModel;
 
 public class Battle {
-
-	int exp;
-	int score;
-	NoodleModel lvTotal = new NoodleModel();
+	NoodleModel lvTotal;
 	Random rd = new Random();
 	Userinfo user = new Userinfo();
-
+	Sound sou = new Sound();
+	
 	Connection conn = null;
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
 	String m_name;
-	int m_lv;
-	int m_exp;
+	String nick;
+	int exp, score, hp, mp, lv, str, iq, dex, luk;
+	int m_exp, m_score, m_lv;
+	int match;
+	int ran = rd.nextInt(100);
+	
 	int menu;
-	int m_score;
-	int hp;
-	int mp;
-	int str;
-	int iq;
-	int dex;
-	int luk;
 	int length = 0;
 	int succ = 1;
 	int fail = 0;
@@ -56,6 +51,7 @@ public class Battle {
 	}
 
 	public void close() {
+
 		try {
 			if (rs != null) {
 				rs.close();
@@ -72,26 +68,51 @@ public class Battle {
 		}
 	}
 
-	public void monster(String id) {
+	public void insertModel(String id) {
 		try {
 			getCon();
+			
 			String sql = "select * from character where id = ?";
-
 			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, id);
+			psmt.setString(1,  id);
 			rs = psmt.executeQuery();
-			if (rs.next()) {
-				lvTotal.setLv(rs.getInt("lv"));
+			
+			if(rs.next()) {
+				lvTotal = new NoodleModel(rs.getInt("exp"), rs.getInt("score"), 
+						rs.getInt("HP"), rs.getInt("MP"), rs.getInt("lv"),
+						rs.getInt("str"), rs.getInt("int"), rs.getInt("dex"), 
+						rs.getInt("luk"), rs.getString("nick"));
 			}
+			exp = lvTotal.getExp();
+			score = lvTotal.getScore();
+			hp = lvTotal.getHp();
+			mp = lvTotal.getMp();
+			lv = lvTotal.getLv();
+			str = lvTotal.getStr();
+			iq = lvTotal.getIq();
+			dex = lvTotal.getDex();
+			luk = lvTotal.getLuk();
+			nick = lvTotal.getNick();
+			
+			
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}	
+	}
 
+	public void insertMonModel(String id) {
+		try {
+			getCon();
 			// 몬스터 정보
-			sql = "select * from monster where m_lv = ?";
+			String sql = "select * from monster where m_lv = ?";
 			// db에서 랜덤뽑기
 			// 자바에서 뽑기
 
 			psmt = conn.prepareStatement(sql);
-
-			psmt.setInt(1, lvTotal.getLv());
+			psmt.setInt(1, lv);
 			rs = psmt.executeQuery();
 
 			if (rs.next()) {
@@ -99,165 +120,150 @@ public class Battle {
 				m_lv = rs.getInt("m_lv");
 				m_exp = rs.getInt("m_exp");
 				m_score = rs.getInt("m_score");
-				System.out.println("몬스터 이름 : " + m_name + "\t Lv : " + m_lv + "\t 몬스터_exp : " + m_exp
-						+ "\t 몬스터_score : " + m_score);
 			}
-
-			// 선택지
-			sql = "select * from character where id = ?";
-
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, id);
-			rs = psmt.executeQuery();
-
-			if (rs.next()) {
-				System.out.println("[1]평타치기(" + rs.getInt("str") * 10 + ")%");
-				System.out.println("[2]스킬쓰기(" + rs.getInt("int") * 10 + ")%");
-				System.out.println("[3]도망가기(" + rs.getInt("dex") * 10 + ")%");
-				System.out.println("[4]협상하기(" + rs.getInt("luk") * 10 + ")%");
-			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close();
 		}
+	}
+	
+	public void chaInfo(String id) {
+		insertModel(id);
+			
+		System.out.println("닉네임\t : " + nick);
+		System.out.print("HP\t : " + hp + "\t");
+		System.out.println("MP\t : " + mp + "\t");
+		System.out.print("레벨\t : " + lv + "\t");
+		System.out.print("현재 경험치\t : " + exp + "\t");
+		System.out.print("현재 점수\t : " + score + "\t");
+		System.out.println();
+		System.out.print("힘\t : " + str + "\t");
+		System.out.print("지능\t : " + iq + "\t");
+		System.out.print("민첩\t : " + dex + "\t");
+		System.out.print("운\t : " + luk + "\t");
+		System.out.println();
+	}
+	
+	public void monInfo(String id) {
+		insertMonModel(id);
+		
+		System.out.println();
+		System.out.println("몬스터 이름\t: " + m_name);
+		System.out.print("레벨\t: " + m_lv);
+		System.out.print("\t몬스터 처치 시 경험치\t: " + m_exp);
+		System.out.print("\t몬스터 처치 시 점수\t: " + m_score);
+		System.out.println();
+				
+			// 선택지
+				System.out.println("[1]평타치기(" + str * 10 + "% 승리)");
+				System.out.println("[2]스킬쓰기(" + iq * 10 + "% 승리)");
+				System.out.println("[3]도망가기(" + dex * 10 + "% 승리)");
+				System.out.println("[4]협상하기(" + luk * 10 + "% 승리)");
+
 	}
 
 	public void fight(String id, int choice) {
 
-		try {
-			getCon();
-			String sql = "select * from character where id = ?";
-
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, id);
-
-			rs = psmt.executeQuery();
-
-			if (rs.next()) {
-				exp = rs.getInt("exp");
-				score = rs.getInt("score");
-				hp = rs.getInt("hp");
-				mp = rs.getInt("mp");
-				str = rs.getInt("str");
-				iq = rs.getInt("int");
-				dex = rs.getInt("dex");
-				luk = rs.getInt("luk");
+		if (choice == 1) {
+			sou.play(1);
+			length = str * 10;
+			for (int i = 0; i < length; i++) {
+				arr[i] = succ;
 			}
 
-				if (choice == 1) {
-					length = str * 10;
-					for (int i = 0; i < length; i++) {
-						arr[i] = succ;
-					}
-					for (int j = length; j < 100; j++) {
-						arr[j] = fail;
-					}
-					int match = arr[rd.nextInt(100)];
-					if (match == succ) {
-						System.out.println("전투에서 승리하였습니다.");
-						exp += m_exp; // 경험치 추가
-						score += 1000 + m_score;
-					} else {
-						hp -= 1;
-						System.out.println("전투에서 패배하셨습니다.");
-					}
-				} else if (choice == 2) {
-					length = iq * 10;
-					int[] arr = new int[100];
-					for (int i = 0; i < length; i++) {
-						arr[i] = succ;
-					}
-					for (int j = length; j < 100; j++) {
-						arr[j] = fail;
-					}
-					int match = arr[rd.nextInt(100)];
-					if (match == succ) {
-						System.out.println("전투에서 승리하였습니다.");
-						mp -= 10;
-						exp += m_exp; // 경험치 추가
-						score += 1000 + m_score;
-					} else {
-						hp -= 1;
-						System.out.println("전투에서 패배하셨습니다.");
-					}
-				} else if (choice == 3) {
-					length = dex * 10;
-					int[] arr = new int[100];
-					for (int i = 0; i < length; i++) {
-						arr[i] = succ;
-					}
-					for (int j = length; j < 100; j++) {
-						arr[j] = fail;
-					}
-					int match = arr[rd.nextInt(100)];
-					if (match == succ) {
-						System.out.println("전투에서 승리하였습니다.");
-						exp += m_exp; // 경험치 추가
-						score += 1000 + m_score;
-					} else {
-						hp -= 1;
-						System.out.println("전투에서 패배하셨습니다.");
-					}
-				} else if (choice == 4) {
-					length = luk * 10;
-					int[] arr = new int[100];
-					for (int i = 0; i < length; i++) {
-						arr[i] = succ;
-					}
-					for (int j = length; j < 100; j++) {
-						arr[j] = fail;
-					}
-					int match = arr[rd.nextInt(100)];
-					if (match == succ) {
-						System.out.println("전투에서 승리하였습니다.");
-						exp += m_exp; // 경험치 추가
-						score += 1000 + m_score;
-					} else {
-						hp -= 1;
-						System.out.println("전투에서 패배하셨습니다.");
-					}
-				}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("싸움 오류!");
-		} finally {
-			close();
+			for (int j = length; j < 100; j++) {
+				arr[j] = fail;
+			}
+
+			match = arr[ran];
+			if (match == succ) {
+				exp += m_exp;
+				score += 1000 + m_score;
+				System.out.println("전투에서 승리하였습니다.");
+			} else {
+				hp -= 1;
+				System.out.println("전투에서 패배하셨습니다.");
+			}
+		} else if (choice == 2) {
+			sou.play(2);
+			length = iq * 10;
+			for (int i = 0; i < length; i++) {
+				arr[i] = succ;
+			}
+			for (int j = length; j < 100; j++) {
+				arr[j] = fail;
+			}
+
+			match = arr[ran];
+			if (match == succ) {
+				mp -= 10;
+				exp += m_exp;
+				score += 1000 + m_score;
+				System.out.println("전투에서 승리하였습니다.");
+			} else {
+				mp -= 10;
+				hp -= 1;
+				System.out.println("전투에서 패배하셨습니다.");
+			}
+		} else if (choice == 3) {
+			sou.play(3);
+			length = dex * 10;
+			for (int i = 0; i < length; i++) {
+				arr[i] = succ;
+			}
+			for (int j = length; j < 100; j++) {
+				arr[j] = fail;
+			}
+			match = arr[ran];
+			if (match == succ) {
+				exp += m_exp;
+				score += 1000 + m_score;
+				System.out.println("전투에서 승리하였습니다.");
+			} else {
+				hp -= 1;
+				System.out.println("전투에서 패배하셨습니다.");
+			}
+		} else if (choice == 4) {
+			sou.play(4);
+			length = luk * 10;
+			for (int i = 0; i < length; i++) {
+				arr[i] = succ;
+			}
+			for (int j = length; j < 100; j++) {
+				arr[j] = fail;
+			}
+			match = arr[ran];
+			if (match == succ) {
+				exp += m_exp;
+				score += 1000 + m_score;
+				System.out.println("전투에서 승리하였습니다.");
+			} else {
+				hp -= 1;
+				System.out.println("전투에서 패배하셨습니다.");
+			}
 		}
 	}
+	
 
 	public void exp(String id) {
 		
 		try {
 			getCon();
 			
-			System.out.println("현재 경험치 : " + exp);
-			System.out.println("현재 점수 : " + score);
-			System.out.println(hp);
-			System.out.println(mp);
-			
-			String sql = "update character set exp = ?, hp = ?, mp = ? where id = ?";
+			String sql = "update character set hp = ?, mp = ?, exp = ?, score = ? where id = ?";
 			psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, exp);
-			psmt.setInt(2, hp);
-			psmt.setInt(3, mp);
-			psmt.setString(4, id);
-			psmt.executeUpdate();
-			
-			System.out.println(score);
-			
-			sql = "update character set score = ? where id = ?";
-			psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, 1100);
-			psmt.setString(2, id);
-			psmt.executeUpdate();
-			
-			System.out.println(score);
-			
+			psmt.setInt(1, hp);
+			psmt.setInt(2, mp);
+			psmt.setInt(3, exp);
+			psmt.setInt(4, score);
+			psmt.setString(5, id);
+			psmt.executeUpdate();			
 			
 		} catch(SQLException e) {
 			e.printStackTrace();
-			System.out.println("경험치 오류!");
+			System.out.println("오류!");
 		} finally {
 			close();
 		}

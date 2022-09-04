@@ -60,10 +60,13 @@ public class statusDAO {
 		int dex = 0;
 		int iq = 0;
 		int luk = 0;
+		int score = 0;
+		
 		try {
 			getCon();
-			String sql = "select * from character where id="+ id;
+			String sql = "select * from character where id = ?";
 			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, id);
 			rs = psmt.executeQuery();
 
 			while (rs.next()) {
@@ -77,6 +80,7 @@ public class statusDAO {
 				dex = rs.getInt(2);
 				iq = rs.getInt(3);
 				luk = rs.getInt(4);
+				score = rs.getInt("score");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -103,6 +107,8 @@ public class statusDAO {
 		System.out.println("    iq       "+iq);
 		System.out.println("├────────┼──────────┤");
 		System.out.println("    luk      "+luk);
+		System.out.println("└────────┴──────────┘");
+		System.out.println("   score     "+score);
 		System.out.println("└────────┴──────────┘");
 	}
 }

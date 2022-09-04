@@ -76,82 +76,79 @@ public class diceDAO {
 			System.out.println("exp = " + exp);
 			
 			while (true) {
-				System.out.print("batting exp = ");
+				System.out.print("batting exp(나가기 0) = ");
 				batting = sc.nextInt();
-				System.out.println();
-				if (exp - batting >= 0) {
+				if(batting == 0) {
 					break;
+				}
+				System.out.println();
+				if (exp - batting >= 0 && batting != 0) {
+					while (true) {
+						System.out.println("["+round+" 라운드]");
+						System.out.print("[1]홀 [2]짝 >> ");
+						input = sc.nextInt();
+						d1.setNumber();
+						d2.setNumber();
+						int dsum = d1.getNumber() + d2.getNumber();
+
+						System.out.println("🎲 : " + d1.getNumber());
+						System.out.println("🎲 : " + d2.getNumber());
+
+						if (dsum % 2 == 0) {
+							output = 2;
+						} else {
+							output = 1;
+						}
+
+						if (output==input) {
+							winCount++;
+							System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
+							if (winCount == 2) {
+								System.out.println("\r\n"
+										+ " _____  _   _  _____  _____  _____  _____  _____ \r\n"
+										+ "/  ___|| | | |/  __ \\/  __ \\|  ___|/  ___|/  ___|\r\n"
+										+ "\\ `--. | | | || /  \\/| /  \\/| |__  \\ `--. \\ `--. \r\n"
+										+ " `--. \\| | | || |    | |    |  __|  `--. \\ `--. \\\r\n"
+										+ "/\\__/ /| |_| || \\__/\\| \\__/\\| |___ /\\__/ //\\__/ /\r\n"
+										+ "\\____/  \\___/  \\____/ \\____/\\____/ \\____/ \\____/ \r\n"
+										+ "                                                 \r\n"
+										+ "                                                 \r\n"
+										+ "");
+								exp = batting * 3;
+								break;
+							}
+						} else {
+							loseCount++;
+							System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
+							if (loseCount == 2) {
+								System.out.println("\r\n"
+										+ "______   ___   _____  _      _   _ ______  _____ \r\n"
+										+ "|  ___| / _ \\ |_   _|| |    | | | || ___ \\|  ___|\r\n"
+										+ "| |_   / /_\\ \\  | |  | |    | | | || |_/ /| |__  \r\n"
+										+ "|  _|  |  _  |  | |  | |    | | | ||    / |  __| \r\n"
+										+ "| |    | | | | _| |_ | |____| |_| || |\\ \\ | |___ \r\n"
+										+ "\\_|    \\_| |_/ \\___/ \\_____/ \\___/ \\_| \\_|\\____/ \r\n"
+										+ "                                                 \r\n"
+										+ "                                                 \r\n"
+										+ "");
+								exp -= batting;
+								break;
+							}
+						}
+						round++;
+					}
+					
 				} else {
 					System.out.println("exp가 부족합니다.\t");
 					break;
 				}
+				
 			}
-			
-			
-			while (true) {
-				System.out.println("["+round+" 라운드]");
-				System.out.print("[1]홀 [2]짝 >> ");
-				input = sc.nextInt();
-				d1.setNumber();
-				d2.setNumber();
-				int dsum = d1.getNumber() + d2.getNumber();
-
-				System.out.println("🎲 : " + d1.getNumber());
-				System.out.println("🎲 : " + d2.getNumber());
-
-				if (dsum % 2 == 0) {
-					output = 2;
-				} else {
-					output = 1;
-				}
-
-				if (output==input) {
-					winCount++;
-					System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
-					if (winCount == 2) {
-						System.out.println("\r\n"
-								+ " _____  _   _  _____  _____  _____  _____  _____ \r\n"
-								+ "/  ___|| | | |/  __ \\/  __ \\|  ___|/  ___|/  ___|\r\n"
-								+ "\\ `--. | | | || /  \\/| /  \\/| |__  \\ `--. \\ `--. \r\n"
-								+ " `--. \\| | | || |    | |    |  __|  `--. \\ `--. \\\r\n"
-								+ "/\\__/ /| |_| || \\__/\\| \\__/\\| |___ /\\__/ //\\__/ /\r\n"
-								+ "\\____/  \\___/  \\____/ \\____/\\____/ \\____/ \\____/ \r\n"
-								+ "                                                 \r\n"
-								+ "                                                 \r\n"
-								+ "");
-						exp = exp + batting * 3;
-						break;
-					}
-				} else {
-					loseCount++;
-					System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
-					if (loseCount == 2) {
-						System.out.println("\r\n"
-								+ "______   ___   _____  _      _   _ ______  _____ \r\n"
-								+ "|  ___| / _ \\ |_   _|| |    | | | || ___ \\|  ___|\r\n"
-								+ "| |_   / /_\\ \\  | |  | |    | | | || |_/ /| |__  \r\n"
-								+ "|  _|  |  _  |  | |  | |    | | | ||    / |  __| \r\n"
-								+ "| |    | | | | _| |_ | |____| |_| || |\\ \\ | |___ \r\n"
-								+ "\\_|    \\_| |_/ \\___/ \\_____/ \\___/ \\_| \\_|\\____/ \r\n"
-								+ "                                                 \r\n"
-								+ "                                                 \r\n"
-								+ "");
-						exp -= batting;
-						break;
-					}
-				}
-				round++;
-			}
-			
 			
 			sql = "update character set exp = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, exp);
-			rs = psmt.executeQuery();
-			if(rs.next()) {
-				System.out.println("현재exp : " + exp);
-			}
-			
+			psmt.executeUpdate();
 		
 		} catch(SQLException e) {
 			e.printStackTrace();

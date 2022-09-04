@@ -5,19 +5,21 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Random;
+import java.util.Scanner;
 
 import Model.NoodleModel;
 
-public class Ranking {
-
-	NoodleModel lv;
+public class InsertModel {
 	Connection conn = null;
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
-	int score = 0;
-	int lev = 0;
-	String nick = "";
+	Random rd = new Random();
+	Scanner sc = new Scanner(System.in);
+	NoodleModel lvTotal;
+	int exp, score, hp, mp, lv, str, iq, dex, luk;
+	String nick;
+	Battle bat = new Battle();
 	
 	public void getCon() {
 		try {
@@ -28,9 +30,7 @@ public class Ranking {
 			String db_pw = "smhrd5";
 			
 			conn = DriverManager.getConnection(url, db_id, db_pw);
-			if(conn!=null)
-				System.out.println("접속완료");
-			
+						
 		} catch(ClassNotFoundException e) {
 			e.printStackTrace();
 			System.out.println("시스템 오류 발생!");
@@ -56,40 +56,37 @@ public class Ranking {
 			System.out.println("자원 반납 오류!");
 		}	
 	}
-
-	public void rank(String id) {
-
+		
+	public void insertModel(String id) {
 		try {
 			getCon();
-			
-			String sql = "select * from character order by score desc";
+			String sql = "select * from character where id = ?";
 			psmt = conn.prepareStatement(sql);
+			psmt.setString(1,  id);
 			rs = psmt.executeQuery();
-			int i = 1;
-			System.out.println("==================랭킹순위==================");
-			System.out.println("등수\tID\t닉네임\t레벨\t점수");
 			
-			while(rs.next()) {
-				id = rs.getString("id");
-				nick = rs.getString("nick");
-				lev = rs.getInt("lv");
-				score = rs.getInt("score");
-				
-				System.out.print(i + "등\t");
-				System.out.print(id);
-				System.out.print("\t" + nick);
-				System.out.print("\t" + lev + "\t");
-				System.out.println(score);
-				i++;
+			if(rs.next()) {
+				lvTotal = new NoodleModel(rs.getInt("exp"), rs.getInt("score"), 
+						rs.getInt("HP"), rs.getInt("MP"), rs.getInt("lv"),
+						rs.getInt("str"), rs.getInt("int"), rs.getInt("dex"), 
+						rs.getInt("luk"), rs.getString("nick"));
 			}
-			System.out.println("=========================================");
+			exp = lvTotal.getExp();
+			score = lvTotal.getScore();
+			hp = lvTotal.getHp();
+			mp = lvTotal.getMp();
+			lv = lvTotal.getLv();
+			str = lvTotal.getStr();
+			iq = lvTotal.getIq();
+			dex = lvTotal.getDex();
+			luk = lvTotal.getLuk();
+			nick = lvTotal.getNick();
 			
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 		} finally {
 			close();
-		}
-
-		
+		}	
 	}
+	
 }

@@ -119,7 +119,7 @@ public class Userinfo {
 					break;
 			}
 						
-			String sql = "insert into character values(?, ?, ?, ?, ?, ?, ?, 1, 5, 5, 0, 0)";
+			String sql = "insert into character values(?, ?, ?, ?, ?, ?, ?, 1, 5, 200, 0, 0)";
 
 			psmt = conn.prepareStatement(sql);
 

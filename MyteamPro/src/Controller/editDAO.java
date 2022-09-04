@@ -50,53 +50,140 @@ public class editDAO {
 		}
 	}
 
-	public void edit() {
+	public int edit(String id) {
+		
 		try {
 			getCon();
-			System.out.print("ID : ");
-			String id = sc.next();
-			System.out.print("레벨 : ");
-			int lv = sc.nextInt();
-			System.out.print("hp : ");
-			int hp = sc.nextInt();
-			System.out.print("mp : ");
-			int mp = sc.nextInt();
-			System.out.print("str : ");
-			int str = sc.nextInt();
-			System.out.print("dex : ");
-			int dex = sc.nextInt();
-			System.out.print("int : ");
-			int iq = sc.nextInt();
-			System.out.print("luk : ");
-			int luk = sc.nextInt();
-			System.out.print("score : ");
-			int score = sc.nextInt();
-
-			String sql = "update character set lv = ?, hp = ?, mp = ?, str = ?, dex = ?, int = ?, luk = ?, score = ? where id = ?";
+			
+			String sql = "select donate from user_info where id = ?";
 			psmt = conn.prepareStatement(sql);
-			psmt.setInt(1, lv);
-			psmt.setInt(2, hp);
-			psmt.setInt(3, mp);
-			psmt.setInt(4, str);
-			psmt.setInt(5, dex);
-			psmt.setInt(6, iq);
-			psmt.setInt(7, luk);
-			psmt.setInt(8, score);
-			psmt.setString(9, id);
-
-			int row = psmt.executeUpdate();
-
-			if (row > 0) {
-				System.out.println("데이터 변경 성공");
-			} else {
-				System.out.println("데이터 변경 실패");
+			psmt.setString(1, id);
+			rs = psmt.executeQuery();
+			if(rs.next()) {
+				if(rs.getString("donate").equals("Y")) {
+					return 1;			
+				} else {
+					return 0;
+				}
 			}
-
-		} catch (SQLException e) {
+		} catch(SQLException e) {
 			e.printStackTrace();
+			System.out.println("오류!!");
 		} finally {
 			close();
-		}
+		} 
+		return -2;
 	}
 
+	public void editLv(String id, int lv) {
+		try {
+			getCon();
+			
+			String sql = "update character set lv = ? where id = ?";
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, lv);
+			psmt.setString(2, id);
+			int cnt = psmt.executeUpdate();
+			if(cnt>0) {
+				System.out.println("레벨이 변경되었습니다!");
+			} else {
+				System.out.println("레벨 변경이 실패하였습니다!");
+			}
+			
+		} catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("오류!!");
+		} finally {
+			close();
+		} 
+	}
+	
+	public void editHP(String id, int HP) {
+		
+		try {
+			getCon();
+			
+			String sql = "update character set lv = ? where id = ?";
+			psmt = conn.prepareStatement(sql);
+			psmt.setInt(1, HP);
+			psmt.setString(2, id);
+			int cnt = psmt.executeUpdate();
+			if(cnt>0) {
+				System.out.println("레벨이 변경되었습니다!");
+			} else {
+				System.out.println("레벨 변경이 실패하였습니다!");
+			}
+
+		} catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("오류!!");
+		} finally {
+			close();
+		} 
+		
+	}
+
+	public void editStat(String id, int menu, int stat) {
+		
+		try {
+			getCon();
+			if(menu == 1) {
+				
+				String sql = "update character set str = ? where id = ?";
+				psmt = conn.prepareStatement(sql);
+				psmt.setInt(1, stat);
+				psmt.setString(2, id);
+				int cnt = psmt.executeUpdate();
+				if(cnt>0) {
+					System.out.println("스텟(힘)이 변경되었습니다!");
+				} else {
+					System.out.println("스텟 변경에 실패하였습니다!");
+				}
+				
+			} else if(menu == 2){
+
+				String sql = "update character set int = ? where id = ?";
+				psmt = conn.prepareStatement(sql);
+				psmt.setInt(1, stat);
+				psmt.setString(2, id);
+				int cnt = psmt.executeUpdate();
+				if(cnt>0) {
+					System.out.println("스텟(지능)이 변경되었습니다!");
+				} else {
+					System.out.println("스텟 변경에 실패하였습니다!");
+				}
+				
+			} else if(menu == 3) {
+
+				String sql = "update character set dex = ? where id = ?";
+				psmt = conn.prepareStatement(sql);
+				psmt.setInt(1, stat);
+				psmt.setString(2, id);
+				int cnt = psmt.executeUpdate();
+				if(cnt>0) {
+					System.out.println("스텟(민첩)이 변경되었습니다!");
+				} else {
+					System.out.println("스텟 변경에 실패하였습니다!");
+				}
+				
+			} else if(menu == 4) {
+
+				String sql = "update character set luk = ? where id = ?";
+				psmt = conn.prepareStatement(sql);
+				psmt.setInt(1, stat);
+				psmt.setString(2, id);
+				int cnt = psmt.executeUpdate();
+				if(cnt>0) {
+					System.out.println("스텟(운)이 변경되었습니다!");
+				} else {
+					System.out.println("스텟 변경에 실패하였습니다!");
+				}
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+			System.out.println("오류!!");
+		} finally {
+			close();
+		} 	
+	}	
 }
