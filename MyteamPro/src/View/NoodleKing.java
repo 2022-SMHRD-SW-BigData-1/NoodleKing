@@ -10,7 +10,9 @@ import Controller.Ranking;
 import Controller.Userinfo;
 import Controller.diceDAO;
 import Controller.editDAO;
+import Controller.idsearchDAO;
 import Controller.lspDAO;
+import Controller.pwsearchDAO;
 import Controller.statusDAO;
 import Model.Monster;
 
@@ -29,6 +31,8 @@ public class NoodleKing {
 		statusDAO stat = new statusDAO();
 		editDAO ed = new editDAO();
 		Monster mon = new Monster();
+		idsearchDAO ids = new idsearchDAO();
+		pwsearchDAO pws = new pwsearchDAO();
 		
 		Scanner sc = new Scanner(System.in);
 		BGM bgm = new BGM();
@@ -40,11 +44,11 @@ public class NoodleKing {
 		String name = "";			
 		while (true) {
 			bgm.play(1);
-			System.out.println("========================");
+			System.out.println("=============================================");
 			System.out.println("      누 들 킹 RPG");
 			System.out.println();
-			System.out.println("[1]로그인 [2]회원가입 [3]종료");
-			System.out.println("========================");
+			System.out.println("[1]로그인 [2]회원가입 [3]ID찾기 [4]PW찾기 [5]종료 ");
+			System.out.println("=============================================");
 			menu = sc.nextInt();
 			if (menu == 1) {
 				
@@ -199,7 +203,33 @@ public class NoodleKing {
 					}
 				}
 
-			} else if (menu == 3) {
+			} else if(menu == 3) {
+				System.out.print("찾으시는 아이디의 이름을 입력하세요 : ");
+				name = sc.next();
+				System.out.print("찾으시는 아이디의 닉네임을 입력하세요 : ");
+				nick = sc.next();
+				id = ids.idSearch(name, nick);
+				System.out.println();
+				if(id != null) {
+					System.out.println("찾으시는 아이디는 '" + id + "' 입니다");
+				} else {
+					System.out.println("일치하는 정보가 없습니다");
+				}
+			} else if (menu == 4) {
+				System.out.print("아이디를 입력하세요 : ");
+				id = sc.next();
+				System.out.print("이름을 입력하세요 : ");
+				name = sc.next();
+				System.out.print("닉네임을 입력하세요 : ");
+				nick = sc.next();
+				pw = pws.pwSearch(id, name, nick);
+				System.out.println();
+				if(pw != null) {
+					System.out.println("찾으시는 아이디의 비밀번호는 '" + pw + "' 입니다");
+				} else {
+					System.out.println("일치하는 정보가 없습니다");
+				}
+			} else if (menu == 5) {
 				System.out.println("게임을 종료하겠습니다");
 				bgm.stop();
 				break;

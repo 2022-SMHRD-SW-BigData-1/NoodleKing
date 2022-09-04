@@ -1,4 +1,4 @@
-
+package Controller;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ public class idsearchDAO {
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
 	Scanner sc = new Scanner(System.in);
+	private String id;
 	
 	public void getCon() {
 		try {
@@ -49,15 +50,11 @@ public class idsearchDAO {
 		}	
 	}
 	
-	public void idSearch() {
-		System.out.print("이름 : ");
-		String name = sc.next();
-		System.out.print("닉네임 : ");
-		String nick = sc.next();
-		String id = null;
+	public String idSearch(String name, String nick) {
+		
 		try {
 			getCon();
-			String sql = "select id from user_info where name= ? and nick = ?";
+			String sql = "select id from user_info where name = ? and nick = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, name);
 			psmt.setString(2, nick);
@@ -65,14 +62,13 @@ public class idsearchDAO {
 
 			if (rs.next()) {
 				id = rs.getString(1);
-				System.out.println("ID : "+id);
 			} else {
-				System.out.println("id를 찾지 못했습니다.");
-			}
+				return null;
+			} 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close();
-		}
-	}
+		} return id;
+	} 
 }

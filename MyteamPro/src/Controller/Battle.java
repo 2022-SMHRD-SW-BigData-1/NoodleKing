@@ -126,11 +126,12 @@ public class Battle {
 				m_exp = rs.getInt("m_exp");
 				m_score = rs.getInt("m_score");
 			}
-			
 			int index = getMon(m_name);
 			mon2 = mon.getMon();
 			
 			System.out.println(mon2.get(index));
+			
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

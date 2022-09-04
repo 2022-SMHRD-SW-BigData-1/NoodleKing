@@ -1,4 +1,4 @@
-
+package Controller;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +12,7 @@ public class pwsearchDAO {
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
 	Scanner sc = new Scanner(System.in);
+	String pw;
 	
 	public void getCon() {
 		try {
@@ -49,27 +50,27 @@ public class pwsearchDAO {
 		}	
 	}
 	
-	public void pwSearch() {
-		System.out.print("ID : ");
-		String id = sc.next();
-		String pw = null;
+	public String pwSearch(String id, String name, String nick) {
+		
 		try {
 			getCon();
-			String sql = "select pw from user_info where id= ? ";
+			String sql = "select pw from user_info where id = ? and name = ? and nick = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setString(1, id);
+			psmt.setString(2, name);
+			psmt.setString(3, nick);
 			rs = psmt.executeQuery();
 
 			if (rs.next()) {
 				pw = rs.getString(1);
-				System.out.println("PW : "+pw);
 			} else {
-				System.out.println("비밀번호를 찾이 못했습니다.");
+				return null;
 			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close();
-		}
+		} return pw;
 	}
 }
