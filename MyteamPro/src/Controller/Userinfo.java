@@ -61,8 +61,16 @@ public class Userinfo {
 		int row = 0;
 		try {			
 			getCon();
-
-			String sql = "insert into user_info values(?,?,?,?,'N')";
+			
+			String sql = "select count(*) from user_info where id = ? and nick = ?";
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1,id);
+			psmt.setString(2,nick);
+			row = psmt.executeUpdate();
+			if(row > 0) {
+			
+			
+			sql = "insert into user_info values(?,?,?,?,'N')";
 			psmt = conn.prepareStatement(sql);
 
 			psmt.setString(1, id);
@@ -71,6 +79,7 @@ public class Userinfo {
 			psmt.setString(4, nick);
 
 			row = psmt.executeUpdate();
+			}
 			
 			if(row>0) {
 				noo = new NoodleModel(id, pw, name, nick, "N");
