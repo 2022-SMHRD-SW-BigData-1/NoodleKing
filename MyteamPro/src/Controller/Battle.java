@@ -27,7 +27,7 @@ public class Battle {
 	int exp, score, hp, mp, lv, str, iq, dex, luk;
 	int m_exp, m_score, m_lv;
 	int match;
-	int ran = rd.nextInt(100);
+	
 	ArrayList<String> mon2;
 
 	int menu;
@@ -192,8 +192,9 @@ public class Battle {
 
 	}
 
-	public void fight(String id, int choice) {
-
+	public void fight(int choice) {
+		
+		int ran = rd.nextInt(100);
 		if (choice == 1) {
 			sou.play(1);
 			length = str * 10;
