@@ -18,82 +18,85 @@ public class Userinfo {
 	Random rd = new Random();
 	Scanner sc = new Scanner(System.in);
 	NoodleModel noo;
-	
+
 	public void getCon() {
 		try {
 			Class.forName("oracle.jdbc.driver.OracleDriver");
-			
+
 			String url = "jdbc:oracle:thin:@project-db-stu.ddns.net:1524:xe";
 			String db_id = "campus_h_0830_5";
 			String db_pw = "smhrd5";
-			
+
 			conn = DriverManager.getConnection(url, db_id, db_pw);
-			if(conn!=null)
+			if (conn != null)
 				System.out.println("접속완료");
-			
-		} catch(ClassNotFoundException e) {
+
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			System.out.println("시스템 오류 발생!");
-		} catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("DB 오류 발생!");
 		}
 	}
-	
+
 	public void close() {
 		try {
-			if(rs != null) {
+			if (rs != null) {
 				rs.close();
 			}
-			if(psmt != null) {
+			if (psmt != null) {
 				psmt.close();
 			}
-			if(conn != null) {
+			if (conn != null) {
 				conn.close();
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("자원 반납 오류!");
-		}	
+		}
 	}
-	
+
 	public int createUser(String id, String pw, String name, String nick) {
 		int row = 0;
-		try {			
+		try {
 			getCon();
-			
+
 			String sql = "select count(*) from user_info where id = ? and nick = ?";
 			psmt = conn.prepareStatement(sql);
-			psmt.setString(1,id);
-			psmt.setString(2,nick);
-			row = psmt.executeUpdate();
-			if(row > 0) {
-			
-			
-			sql = "insert into user_info values(?,?,?,?,'N')";
-			psmt = conn.prepareStatement(sql);
-
 			psmt.setString(1, id);
-			psmt.setString(2, pw);
-			psmt.setString(3, name);
-			psmt.setString(4, nick);
+			psmt.setString(2, nick);
+			rs = psmt.executeQuery();
+			if (rs.next() == false) {
 
-			row = psmt.executeUpdate();
+				sql = "insert into user_info values(?,?,?,?,'N')";
+				psmt = conn.prepareStatement(sql);
+
+				psmt.setString(1, id);
+				psmt.setString(2, pw);
+				psmt.setString(3, name);
+				psmt.setString(4, nick);
+
+				row = psmt.executeUpdate();
+			}else {
+				System.out.println("중복된 아이디 아니면 닉네임입니다.");
+				System.out.println("프로그램을 종료하고 재시작해주세요.");
 			}
-			
-			if(row>0) {
+
+			if (row > 0) {
 				noo = new NoodleModel(id, pw, name, nick, "N");
 			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("유저 데이터베이스 오류발생");
-			
+
 		} finally {
 			close();
-		} return row;
+		}
+		return row;
 	}
-	
+
 	public int createCha(String id, String pw, String nick) {
 		int row = 0;
 		try {
@@ -104,8 +107,8 @@ public class Userinfo {
 			int iq = 0;
 			int luk = 0;
 			int[] arr = new int[4];
-			
-			while(true) {
+
+			while (true) {
 				while (true) {
 					for (int i = 0; i < 4; i++) {
 						arr[i] = rd.nextInt(6) + 4;
@@ -115,8 +118,8 @@ public class Userinfo {
 						break;
 					}
 					sum = 0;
-				}			
-				
+				}
+
 				str = arr[0];
 				dex = arr[1];
 				iq = arr[2];
@@ -124,10 +127,10 @@ public class Userinfo {
 				System.out.println("힘: " + str + "\t" + "민첩: " + dex + "\t" + "지능: " + iq + "\t" + "운: " + luk);
 				System.out.print("이대로 생성하시겠습니까?(Y/N) : ");
 				String yorn = sc.next();
-				if(yorn.equals("Y") || yorn.equals("y"))
+				if (yorn.equals("Y") || yorn.equals("y"))
 					break;
 			}
-						
+
 			String sql = "insert into character values(?, ?, ?, ?, ?, ?, ?, 1, 5, 200, 0, 0)";
 
 			psmt = conn.prepareStatement(sql);
@@ -139,38 +142,40 @@ public class Userinfo {
 			psmt.setString(5, id);
 			psmt.setString(6, pw);
 			psmt.setString(7, nick);
-			
+
 			row = psmt.executeUpdate();
-			
-		} catch(SQLException e) {
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("스탯 데이터베이스 오류!");
 		} finally {
 			close();
-		} return row;
+		}
+		return row;
 	}
-	
+
 	public int login(String id, String pw) {
 		try {
-		getCon();
-	
-		String sql = "select pw from user_info where id = ?";
-		
-		psmt = conn.prepareStatement(sql);
-		
-		psmt.setString(1, id);
+			getCon();
 
-		rs = psmt.executeQuery();
-		
-		if(rs.next()) {
-			if(rs.getString(1).contentEquals(pw)) {		
-				return 1; // 로그인 성공
-			} else {
-			return 0; // 비밀번호 실패
+			String sql = "select pw from user_info where id = ?";
+
+			psmt = conn.prepareStatement(sql);
+
+			psmt.setString(1, id);
+
+			rs = psmt.executeQuery();
+
+			if (rs.next()) {
+				if (rs.getString(1).contentEquals(pw)) {
+					return 1; // 로그인 성공
+				} else {
+					return 0; // 비밀번호 실패
+				}
 			}
-		} return -1; // 없는 아이디
-		
-		} catch(SQLException e) {
+			return -1; // 없는 아이디
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("데이터베이스 오류");
 		} finally {
@@ -178,11 +183,8 @@ public class Userinfo {
 		}
 		return -2;
 	}
-	
-	
+
 }
-
-
 
 //sql = "select * from character where id = ?";
 //psmt = conn.prepareStatement(sql);
