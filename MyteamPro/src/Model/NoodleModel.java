@@ -24,7 +24,6 @@ public class NoodleModel {
 	private String m_pic;
 	
 	
-	
 	public NoodleModel(String m_name, String m_pic) {
 		super();
 		this.m_name = m_name;

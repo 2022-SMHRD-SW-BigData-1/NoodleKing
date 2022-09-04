@@ -17,7 +17,7 @@ public class Battle {
 	Userinfo user = new Userinfo();
 	Sound sou = new Sound();
 	Monster mon = new Monster();
-	
+
 	Connection conn = null;
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
@@ -29,7 +29,7 @@ public class Battle {
 	int match;
 	int ran = rd.nextInt(100);
 	ArrayList<String> mon2;
-	
+
 	int menu;
 	int length = 0;
 	int succ = 1;
@@ -76,17 +76,16 @@ public class Battle {
 	public void insertModel(String id) {
 		try {
 			getCon();
-			
+
 			String sql = "select * from character where id = ?";
 			psmt = conn.prepareStatement(sql);
-			psmt.setString(1,  id);
+			psmt.setString(1, id);
 			rs = psmt.executeQuery();
-			
-			if(rs.next()) {
-				lvTotal = new NoodleModel(rs.getInt("exp"), rs.getInt("score"), 
-						rs.getInt("HP"), rs.getInt("MP"), rs.getInt("lv"),
-						rs.getInt("str"), rs.getInt("int"), rs.getInt("dex"), 
-						rs.getInt("luk"), rs.getString("nick"));
+
+			if (rs.next()) {
+				lvTotal = new NoodleModel(rs.getInt("exp"), rs.getInt("score"), rs.getInt("HP"), rs.getInt("MP"),
+						rs.getInt("lv"), rs.getInt("str"), rs.getInt("int"), rs.getInt("dex"), rs.getInt("luk"),
+						rs.getString("nick"));
 			}
 			exp = lvTotal.getExp();
 			score = lvTotal.getScore();
@@ -98,17 +97,15 @@ public class Battle {
 			dex = lvTotal.getDex();
 			luk = lvTotal.getLuk();
 			nick = lvTotal.getNick();
-			
-			
-			
-		} catch(Exception e) {
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			close();
-		}	
+		}
 	}
 
-	public void insertMonModel(String id) { 
+	public void insertMonModel(String id) {
 		try {
 			getCon();
 			// 몬스터 정보
@@ -120,7 +117,7 @@ public class Battle {
 			psmt.setInt(1, lv);
 			rs = psmt.executeQuery();
 
-			if(rs.next()) {
+			if (rs.next()) {
 				m_name = rs.getString("m_name");
 				m_lv = rs.getInt("m_lv");
 				m_exp = rs.getInt("m_exp");
@@ -128,35 +125,34 @@ public class Battle {
 			}
 			int index = getMon(m_name);
 			mon2 = mon.getMon();
-			
+
 			System.out.println(mon2.get(index));
-			
-			
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} finally {
 			close();
 		}
 	}
-	
+
 	public int getMon(String m_name) {
-		String[] mon = {"속찬라면", "콩국수", "봉골라면", "메밀소바", "스파게티", "라면볶이", "쌀라면", "독도와함께라면", "목이라면", "손큰라면", 
-					"간짬뽕", "국민라면", "남자라면", "사리면", "속풀라면", "우리밀라면", "짜짜로니", "카레라면", "컵누들", "황태라면",
-					"나가사끼짬뽕", "새우탕", "손칼국수", "쇠고기면", "수타면", "열라면", "진짬뽕", "참깨라면", "튀김우동", "파워라면", 
-					"꼬꼬면", "너구리", "무파마", "비빔면", "삼양라면", "스낵면", "안성탕면", "오모리김치찌개", "오징어짬뽕", "틈새라면",
-					"감자면", "공화춘", "마왕라면", "부대찌개라면", "불닭볶음면", "사리곰탕", "순후추라면", "육개장", "진라면", "짜파게티"};
-		
-		while(true) {
-			if(m_name.equals(mon[index]) || index>49) {
-				break;
+		String[] mon = { "속찬라면", "콩국수", "봉골라면", "메밀소바", "스파게티", "라면볶이", "쌀라면", "독도와함께라면", "목이라면", "손큰라면", "간짬뽕", "국민라면",
+				"남자라면", "사리면", "속풀라면", "우리밀라면", "짜짜로니", "카레라면", "컵누들", "황태라면", "나가사끼짬뽕", "새우탕", "손칼국수", "쇠고기면", "수타면",
+				"열라면", "진짬뽕", "참깨라면", "튀김우동", "파워라면", "꼬꼬면", "너구리", "무파마", "비빔면", "삼양라면", "스낵면", "안성탕면", "오모리김치찌개",
+				"오징어짬뽕", "틈새라면", "감자면", "공화춘", "마왕라면", "부대찌개라면", "불닭볶음면", "사리곰탕", "순후추라면", "육개장", "진라면", "짜파게티" };
+
+		while (true) {
+			if (index > 49) {
+				index = 0;
+			}
+			if (m_name.equals(mon[index])) {
+				return index;
 			} else {
 				index++;
 			}
 		}
-		return index;
 	}
-	
+
 	public void chaInfo(String id) {
 		insertModel(id);
 		System.out.println("==============================캐릭터정보==============================");
@@ -174,7 +170,7 @@ public class Battle {
 		System.out.println("===================================================================");
 		System.out.println();
 	}
-	
+
 	public void monInfo(String id) {
 		insertMonModel(id);
 		System.out.println();
@@ -184,9 +180,9 @@ public class Battle {
 		System.out.print("\t몬스터 처치 시 경험치\t: " + m_exp);
 		System.out.println("\t몬스터 처치 시 점수\t: " + m_score);
 		System.out.println("===================================================================");
-		System.out.println();	
+		System.out.println();
 		chaInfo(id);
-			// 선택지
+		// 선택지
 		System.out.println("====================전투옵션====================");
 		System.out.println("[1]평타치기(" + str * 10 + "% 승리)");
 		System.out.println("[2]스킬쓰기(" + iq * 10 + "% 승리)");
@@ -277,13 +273,12 @@ public class Battle {
 			}
 		}
 	}
-	
 
 	public void exp(String id) {
-		
+
 		try {
 			getCon();
-			
+
 			String sql = "update character set hp = ?, mp = ?, exp = ?, score = ? where id = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, hp);
@@ -291,14 +286,39 @@ public class Battle {
 			psmt.setInt(3, exp);
 			psmt.setInt(4, score);
 			psmt.setString(5, id);
-			psmt.executeUpdate();			
-			
-		} catch(SQLException e) {
+			psmt.executeUpdate();
+
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("오류!");
 		} finally {
 			close();
 		}
-		
+
+	}
+
+	public int die(String id) {
+		if (hp <= 0) {
+
+			try {
+				getCon();
+
+				String sql = "delete from character where id = ?";
+				psmt = conn.prepareStatement(sql);
+				psmt.setString(1, id);
+				psmt.executeUpdate();
+
+				sql = "delete from user_info where id = ?";
+				psmt = conn.prepareStatement(sql);
+				psmt.setString(1, id);
+				psmt.executeUpdate();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				close();
+			}
+			return 1;
+		}
+		return 0;
 	}
 }
