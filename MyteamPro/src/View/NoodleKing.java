@@ -152,9 +152,6 @@ public class NoodleKing {
 									break;
 								}
 							}
-
-								
-							
 						} else if(menu==6) {
 							bgm.play(1);
 							break;
@@ -201,5 +198,4 @@ public class NoodleKing {
 			}
 		}
 	}
-	
 }
