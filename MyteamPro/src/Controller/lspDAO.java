@@ -114,8 +114,8 @@ public class lspDAO {
 							System.out.println("["+round+" 라운드]");
 							System.out.print("[1]가위 [2]바위 [3]보 >> ");
 							input = sc.nextInt();
-							lv.setNumber();
-							if (lv.getNumber() == 1) {
+							lv2.setNumber();
+							if (lv2.getNumber() == 1) {
 								System.out.println("MMMMMMMMMMMMMMMXOO0OOOXMMMMMMMMWX0000NMM\r\n"
 										+ "MMMMMMMMMMMMMMXxkNWNXkxXMMMMMMWOx0KKOx0W\r\n"
 										+ "MMMMMMMMMMMMMMOxXMMMMXxOMMMMMWkxXMWWMkxW\r\n"
@@ -261,7 +261,7 @@ public class lspDAO {
 									}
 								}
 								System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
-							} else if (lv.getNumber() == 2) {
+							} else if (lv2.getNumber() == 2) {
 								System.out.println("MMMMMMMMMMMMXOkOOOOOkOKXXXWMMMMWMMMMMMMM\r\n"
 										+ "MMMMMMMMMMWKdkNWWMWKOlckkkxxKMMMMMMMMMMM\r\n"
 										+ "MMMMMMMMMM0o0MWWMMWKkOXMMMNkl0MWMMMMMMMM\r\n"
