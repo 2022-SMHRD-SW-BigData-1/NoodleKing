@@ -97,11 +97,13 @@ public class NoodleKing {
 								if (menu == 1) {
 									lsp.playGame(id);
 									lev.lvUp(id);
+									bat.chaInfo(id);
 									bgm.play(1);
 									break;
 								} else if (menu == 2) {
 									dice.playGame(id);
 									lev.lvUp(id);
+									bat.chaInfo(id);
 									bgm.play(1);
 									break;
 								} else if (menu == 3) {
