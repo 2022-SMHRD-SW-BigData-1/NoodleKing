@@ -7,19 +7,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import Model.NoodleModel;
 import Model.lspVO;
 
 public class lspDAO {
 
-	private int exp;
 	private int batting;
 	private int input;
 	Connection conn = null;
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
 	String id;
-	lspVO lv = new lspVO();
+	NoodleModel lvTotal;
+	
+	lspVO lv2 = new lspVO();
 	Scanner sc = new Scanner(System.in);
+	int exp, score, hp, mp, lv, str, iq, dex, luk;
+	String nick;
 	
 	public void getCon() {
 		try {
@@ -56,24 +60,47 @@ public class lspDAO {
 		}	
 	}
 
+	public void insertModel(String id) {
+		try {
+			getCon();
+			String sql = "select * from character where id = ?";
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1,  id);
+			rs = psmt.executeQuery();
+			
+			if(rs.next()) {
+				lvTotal = new NoodleModel(rs.getInt("exp"), rs.getInt("score"), 
+						rs.getInt("HP"), rs.getInt("MP"), rs.getInt("lv"),
+						rs.getInt("str"), rs.getInt("int"), rs.getInt("dex"), 
+						rs.getInt("luk"), rs.getString("nick"));
+			}
+			exp = lvTotal.getExp();
+			score = lvTotal.getScore();
+			hp = lvTotal.getHp();
+			mp = lvTotal.getMp();
+			lv = lvTotal.getLv();
+			str = lvTotal.getStr();
+			iq = lvTotal.getIq();
+			dex = lvTotal.getDex();
+			luk = lvTotal.getLuk();
+			nick = lvTotal.getNick();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}	
+	}
+	
 	public void playGame(String id) {
 		
 		try {
-			getCon();
-	
-			String sql = "select id, exp from character where id = ?";
-			
-			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, id);
-			rs = psmt.executeQuery();
-			if(rs.next())
-				id = rs.getString("id");
-				exp = rs.getInt("exp");
-			
+			insertModel(id);
+			getCon();			
+
 			int winCount = 0;
 			int loseCount = 0;
 			int round = 1;
-			
 			System.out.println("exp = " + exp);
 			while (true) {
 				System.out.print("batting exp(나가기 0) = ");
@@ -87,8 +114,8 @@ public class lspDAO {
 							System.out.println("["+round+" 라운드]");
 							System.out.print("[1]가위 [2]바위 [3]보 >> ");
 							input = sc.nextInt();
-							lv.setNumber();
-							if (lv.getNumber() == 1) {
+							lv2.setNumber();
+							if (lv2.getNumber() == 1) {
 								System.out.println("\r\n"
 										+ "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\r\n"
 										+ "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\r\n"
@@ -189,7 +216,7 @@ public class lspDAO {
 									}
 								}
 								System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
-							} else if (lv.getNumber() == 2) {
+							} else if (lv2.getNumber() == 2) {
 								System.out.println("\r\n"
 										+ "⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿\r\n"
 										+ "⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠉⠙⡿⣿⣿⣿⣿⣿⣿⣿\r\n"
@@ -400,15 +427,14 @@ public class lspDAO {
 						break;
 					}
 				}
-				}
+				}		
 			
-			sql = "update character set exp = ?";
+			String sql = "update character set exp = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, exp);
 			psmt.executeUpdate();
-
 			
-		} catch(SQLException e) {
+		} catch(Exception e) {
 			e.printStackTrace();
 			System.out.println("게임 오류");
 		} finally {
