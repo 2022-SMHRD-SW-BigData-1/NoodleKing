@@ -187,23 +187,51 @@ public class Level {
 		insertModel(id);
 		bat.chaInfo(id);
 		sou.play(5);
-		System.out.println("====================스텟====================");
-		System.out.println("레벨업!!");
-		System.out.println("증가할 스탯을 고르세요");
-		System.out.print("[1]STR [2]INT [3]DEX [4]LUK");
-		System.out.println("===========================================");
-		int select = sc.nextInt();
 
-		if (select == 1) {
-			str++;
-		} else if (select == 2) {
-			iq++;
-		} else if (select == 3) {
-			dex++;
-		} else if (select == 4) {
-			luk++;
+		while(true) {
+			
+			System.out.println("====================스텟====================");
+			System.out.println("레벨업!!");
+			System.out.println("증가할 스탯을 고르세요");
+			System.out.println("[1]STR [2]INT [3]DEX [4]LUK");
+			System.out.println("===========================================");
+			int select = sc.nextInt();
+			
+			if (select == 1) {
+				if(str>=10) {
+					System.out.println("STR을 더이상 올릴 수 없습니다.");
+					System.out.println("다른 스텟을 올려주세요!");
+				} else {
+					str++;
+					break;
+				}
+			} else if (select == 2) {
+				if(iq>=10) {
+					System.out.println("INT를 더이상 올릴 수 없습니다.");
+					System.out.println("다른 스텟을 올려주세요!");
+				} else {
+					iq++;
+					break;
+				}
+			} else if (select == 3) {
+				if(dex>=10) {
+					System.out.println("DEX을 더이상 올릴 수 없습니다.");
+					System.out.println("다른 스텟을 올려주세요!");
+				} else {
+					dex++;
+					break;
+				}
+			} else if (select == 4) {
+				if(luk>=10) {
+					System.out.println("LUK을 더이상 올릴 수 없습니다.");
+					System.out.println("다른 스텟을 올려주세요!");
+				} else {
+					luk++;
+					break;
+				}
+			}
 		}
-
+		
 		try {
 			getCon();
 

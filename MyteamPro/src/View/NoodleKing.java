@@ -96,7 +96,6 @@ public class NoodleKing {
 							while (true) {
 								if (menu == 1) {
 									lsp.playGame(id);
-									//bat.exp(id);
 									lev.lvUp(id);
 									bgm.play(1);
 									break;

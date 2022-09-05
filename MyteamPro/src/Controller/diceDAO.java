@@ -7,19 +7,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Scanner;
 
+import Model.NoodleModel;
 import Model.diceVO;
 
 public class diceDAO {
-	private int exp;
+	
 	private int batting;
 	private int input;
 	Connection conn = null;
 	PreparedStatement psmt = null;
 	ResultSet rs = null;
 	String id;
+	NoodleModel lvTotal;
 	Scanner sc = new Scanner(System.in);	
 	diceVO d1 = new diceVO();
 	diceVO d2 = new diceVO();
+	int exp, score, hp, mp, lv, str, iq, dex, luk;
+	String nick;
+	
 	
 	public void getCon() {
 		try {
@@ -56,18 +61,44 @@ public class diceDAO {
 		}	
 	}
 
-	public void playGame(String id) {
-		
+	public void insertModel(String id) {
 		try {
 			getCon();
 			String sql = "select * from character where id = ?";
-			
 			psmt = conn.prepareStatement(sql);
-			psmt.setString(1, id);
+			psmt.setString(1,  id);
 			rs = psmt.executeQuery();
-			if(rs.next())
-				exp = rs.getInt("exp");
 			
+			if(rs.next()) {
+				lvTotal = new NoodleModel(rs.getInt("exp"), rs.getInt("score"), 
+						rs.getInt("HP"), rs.getInt("MP"), rs.getInt("lv"),
+						rs.getInt("str"), rs.getInt("int"), rs.getInt("dex"), 
+						rs.getInt("luk"), rs.getString("nick"));
+			}
+			exp = lvTotal.getExp();
+			score = lvTotal.getScore();
+			hp = lvTotal.getHp();
+			mp = lvTotal.getMp();
+			lv = lvTotal.getLv();
+			str = lvTotal.getStr();
+			iq = lvTotal.getIq();
+			dex = lvTotal.getDex();
+			luk = lvTotal.getLuk();
+			nick = lvTotal.getNick();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}	
+	}
+	
+	public void playGame(String id) {
+		
+		try {
+			insertModel(id);
+			getCon();
+
 			int winCount = 0;
 			int loseCount = 0;
 			int round = 1;
@@ -81,180 +112,182 @@ public class diceDAO {
 				if(batting == 0) {
 					break;
 				}
-				System.out.println();
-				if (exp - batting >= 0 && batting != 0) {
-					while (true) {
-						System.out.println("["+round+" 라운드]");
-						System.out.print("[1]홀 [2]짝 >> ");
-						input = sc.nextInt();
-						d1.setNumber();
-						d2.setNumber();
-						int dsum = d1.getNumber() + d2.getNumber();
-
-						if(d1.getNumber()==1) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⠉⠉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⠉⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣀⣀⣀⣀⣀⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						}else if(d1.getNumber()==2) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⠀⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d1.getNumber()==3) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d1.getNumber()==4) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⠀⠈⠋⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣠⡀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d1.getNumber()==5) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⣀⠈⠋⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣠⡀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d1.getNumber()==6){
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣙⡁⠀⢈⣋⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣩⡁⠀⢈⣍⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						}
-						
-						if(d2.getNumber()==1) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⠉⠉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⠉⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣀⣀⣀⣀⣀⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						}else if(d2.getNumber()==2) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⠀⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d2.getNumber()==3) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠀⠀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d2.getNumber()==4) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⠀⠈⠋⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣠⡀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d2.getNumber()==5) {
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⠙⠁⣀⠈⠋⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣠⡀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						} else if(d2.getNumber()==6){
-							System.out.print("\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣙⡁⠀⢈⣋⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⢸⠀⣩⡁⠀⢈⣍⠀⡇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
-									+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
-									+ "");
-						}
-
-						if (dsum % 2 == 0) {
-							output = 2;
-						} else {
-							output = 1;
-						}
-
-						if (output==input) {
-							winCount++;
-							System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
-							if (winCount == 2) {
-								System.out.println("\r\n"
-										+ " _____  _   _  _____  _____  _____  _____  _____ \r\n"
-										+ "/  ___|| | | |/  __ \\/  __ \\|  ___|/  ___|/  ___|\r\n"
-										+ "\\ `--. | | | || /  \\/| /  \\/| |__  \\ `--. \\ `--. \r\n"
-										+ " `--. \\| | | || |    | |    |  __|  `--. \\ `--. \\\r\n"
-										+ "/\\__/ /| |_| || \\__/\\| \\__/\\| |___ /\\__/ //\\__/ /\r\n"
-										+ "\\____/  \\___/  \\____/ \\____/\\____/ \\____/ \\____/ \r\n"
-										+ "                                                 \r\n"
-										+ "                                                 \r\n"
-										+ "");
-								exp = batting * 3;
-								break;
-							}
-						} else {
-							loseCount++;
-							System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
-							if (loseCount == 2) {
-								System.out.println("\r\n"
-										+ "______   ___   _____  _      _   _ ______  _____ \r\n"
-										+ "|  ___| / _ \\ |_   _|| |    | | | || ___ \\|  ___|\r\n"
-										+ "| |_   / /_\\ \\  | |  | |    | | | || |_/ /| |__  \r\n"
-										+ "|  _|  |  _  |  | |  | |    | | | ||    / |  __| \r\n"
-										+ "| |    | | | | _| |_ | |____| |_| || |\\ \\ | |___ \r\n"
-										+ "\\_|    \\_| |_/ \\___/ \\_____/ \\___/ \\_| \\_|\\____/ \r\n"
-										+ "                                                 \r\n"
-										+ "                                                 \r\n"
-										+ "");
-								exp -= batting;
-								break;
-							}
-						}
-						round++;
-					}
+				else {
+					System.out.println();
 					
-				} else {
-					System.out.println("exp가 부족합니다.\t");
-					break;
+					if (exp - batting >= 0 && batting != 0) {
+						while (true) {
+							System.out.println("["+round+" 라운드]");
+							System.out.print("[1]홀 [2]짝 >> ");
+							input = sc.nextInt();
+							d1.setNumber();
+							d2.setNumber();
+							int dsum = d1.getNumber() + d2.getNumber();
+
+							if(d1.getNumber()==1) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⠉⠉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⠉⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣀⣀⣀⣀⣀⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							}else if(d1.getNumber()==2) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⠀⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d1.getNumber()==3) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d1.getNumber()==4) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⠀⠈⠋⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣠⡀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d1.getNumber()==5) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⣀⠈⠋⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣠⡀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d1.getNumber()==6){
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣙⡁⠀⢈⣋⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣩⡁⠀⢈⣍⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							}
+							
+							if(d2.getNumber()==1) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⠉⠉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⠉⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣀⣀⣀⣀⣀⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							}else if(d2.getNumber()==2) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⠀⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d2.getNumber()==3) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⠉⠉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⣀⠀⠀⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠀⠀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣀⣀⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d2.getNumber()==4) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀ ⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⠀⠈⠋⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣠⡀⠀⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d2.getNumber()==5) {
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⠙⠁⣀⠈⠋⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣠⡀⠉⢀⣄⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							} else if(d2.getNumber()==6){
+								System.out.print("\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢰⠉⣉⡉⠉⢉⣉⠉⡆⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣙⡁⠀⢈⣋⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⢸⠀⣩⡁⠀⢈⣍⠀⡇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠸⣀⣉⣁⣀⣈⣉⣀⠇⠀⠀⠀\r\n"
+										+ "⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀\r\n"
+										+ "");
+							}
+
+							if (dsum % 2 == 0) {
+								output = 2;
+							} else {
+								output = 1;
+							}
+
+							if (output==input) {
+								winCount++;
+								System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
+								if (winCount == 2) {
+									System.out.println("\r\n"
+											+ " _____  _   _  _____  _____  _____  _____  _____ \r\n"
+											+ "/  ___|| | | |/  __ \\/  __ \\|  ___|/  ___|/  ___|\r\n"
+											+ "\\ `--. | | | || /  \\/| /  \\/| |__  \\ `--. \\ `--. \r\n"
+											+ " `--. \\| | | || |    | |    |  __|  `--. \\ `--. \\\r\n"
+											+ "/\\__/ /| |_| || \\__/\\| \\__/\\| |___ /\\__/ //\\__/ /\r\n"
+											+ "\\____/  \\___/  \\____/ \\____/\\____/ \\____/ \\____/ \r\n"
+											+ "                                                 \r\n"
+											+ "                                                 \r\n"
+											+ "");
+									exp = batting * 3 + exp;
+									break;
+								}
+							} else {
+								loseCount++;
+								System.out.println("[winCount] : "+winCount+"\t[loseCount] : "+loseCount+"\n");
+								if (loseCount == 2) {
+									System.out.println("\r\n"
+											+ "______   ___   _____  _      _   _ ______  _____ \r\n"
+											+ "|  ___| / _ \\ |_   _|| |    | | | || ___ \\|  ___|\r\n"
+											+ "| |_   / /_\\ \\  | |  | |    | | | || |_/ /| |__  \r\n"
+											+ "|  _|  |  _  |  | |  | |    | | | ||    / |  __| \r\n"
+											+ "| |    | | | | _| |_ | |____| |_| || |\\ \\ | |___ \r\n"
+											+ "\\_|    \\_| |_/ \\___/ \\_____/ \\___/ \\_| \\_|\\____/ \r\n"
+											+ "                                                 \r\n"
+											+ "                                                 \r\n"
+											+ "");
+									exp -= batting;
+									break;
+								}
+							}
+							round++;
+						}
+						break;
+					} else {
+						System.out.println("exp가 부족합니다.\t");
+						break;
+					}
 				}
-				
-			}
+				}
 			
-			sql = "update character set exp = ?";
+			String sql = "update character set exp = ?";
 			psmt = conn.prepareStatement(sql);
 			psmt.setInt(1, exp);
 			psmt.executeUpdate();
